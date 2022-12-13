@@ -1,4 +1,4 @@
-# SF-GWAS for LMM
+# SF-GWAS for Linear Mixed Models
 
 Software for secure and federated genome-wide association studies, as described in:
 
@@ -6,7 +6,7 @@ Software for secure and federated genome-wide association studies, as described 
 Hyunghoon Cho, David Froelicher, Jeffrey Chen, Manaswitha Edupalli, Apostolos Pyrgelis, Juan R. Troncoso-Pastoriza, Jean-Pierre Hubaux, Bonnie Berger\
 Under review, 2022
 
-This repository provides the code for LMM-based association analysis. For PCA-based GWAS, see [here](https://github.com/hhcho/sfgwas).
+This repository provides the code for linear mixed model (LMM)-based association analysis. For PCA-based GWAS, see [here](https://github.com/hhcho/sfgwas).
 
 ## Installation
 
@@ -73,6 +73,26 @@ Main input data files include:
 - `cov.txt`: each line includes a tab-separated list of covariates for each sample in the `.psam` file.
 - `sample_keep.txt`: a list of sample IDs from the `.psam` file to include in the analysis; to be used with the `--keep` flag in PLINK2 (see [here](https://www.cog-genomics.org/plink/2.0/filter#sample) for file specification).
 
+### Converting genotype data to binary block format
+
+For LMM-based workflow, we currently require that the PGEN files be combined and converted to our binary block format as follows: 
+
+1. Convert the PGEN files to PLINK1.9 BED format using `plink2 --make-bed` command.
+2. Merge the BED files into a single file set using PLINK1.9 with the command `--merge-list`.
+3. Run the conversion script we provided to convert to a binary format:
+
+```
+python3 scripts/plinkBedToBinary.py combined.bed [Sample count] [SNP count] combined_binary.bin
+```
+
+4. Run the block generation script to split the binary file into blocks:
+
+```
+python3 scripts/matrix_text2bin_blocks.py [Input directory] [Number of parties] [Number of folds] [Block size] [Output directory]
+```
+
+5. Update the config files accordingly to provide the paths to the block-format genotype files.
+
 ### Preparing additional input files
 
 We provide two preprocessing scripts in `scripts/` for producing additional input files needed for SF-GWAS. 
@@ -104,15 +124,24 @@ Example config files are provided in `config/`. There are both global config par
 
 ### Running the program
 
-An example script `run_example.sh` shows how to run SF-GWAS. 
+Given the computational resource needed for the LMM-based workflow, we recommend running each party on a separate machine (with their IP addresses updated accordingly in the config files). Note that in our experiments, we used a Google Cloud VM with 64 vCPUs and 512GB RAM.
 
-The script spawns 3 processes on the same machine---one for each of the two data-contributing parties (`PID=1` and `PID=2`)and the third for the auxiliary party coordinating the computation (`PID=0`). In practice, each party runs their process on their own machine and provides the IP addresses of other parties in the configuration for network communication. 
+Parallelization in our code requires many file pointers to be open at the same time. We recommend increasing the default limit by running `ulimit -n 12000`.
 
-We also provide `stop.sh` for terminating the jobs launched by `run_example.sh`.
+The LMM workflow is composed of three steps: Level 0, Level 1, and association tests. Levels 0 and 1 implement the two rounds of stacked ridge regression described in our manuscript (following [REGENIE](https://rgcgithub.github.io/regenie/)).
+
+The commands to run each of the three steps are:
+```
+PID=[Party ID] go test -run TestLevel0 -timeout 96h
+PID=[Party ID] go test -run TestLevel1 -timeout 96h
+PID=[Party ID] go test -run TestAssoc -timeout 96h
+```
+
+`[Party ID]` is set to 1 or 2 for the two parties for the example dataset. Note that a third auxiliary party with ID 0 also needs to run together with the main parties to facilitate the protocol.
 
 ### Output
 
-Once SF-GWAS finishes, it generates `assoc.txt` in the output directory specified in the configuration. This file includes the Pearson correlation coefficient for each variant passing the quality control filters. Binary vector indicating the inclusion of each variant in the final output is specified in `gkeep.txt` in the cache directory.
+Once the workflow finishes, it generates `assoc.txt` in the output directory specified in the configuration. This file includes the LMM-based association test chi-square statistics. Details are provided in our manuscript.
 
 ## Contact for questions
 
