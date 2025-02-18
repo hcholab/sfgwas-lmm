@@ -1,0 +1,14 @@
+# Ignore everything except for specific files and folders;
+# this avoids unnecesary rebuilds in Docker
+*
+!/config
+!/crypto
+!/example_data
+!/gwas
+!/lmm
+!/mpc
+!go.*
+!LICENSE
+!README.md
+
+
