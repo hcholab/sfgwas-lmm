@@ -18,24 +18,6 @@ SF-GWAS requires that `go`, `python3`, and `plink2` are available in the exec pa
 - Python (>=3.9.2) with [NumPy](https://numpy.org/install/)
 - [PLINK2](https://www.cog-genomics.org/plink/2.0/)
 
-### Go libraries for secure computation
-
-1. SF-GWAS uses the [Lattigo](https://github.com/tuneinsight/lattigo) library for multiparty homomorphic encryption. To install a forked version used by SF-GWAS (branch: `lattigo_pca`), run:
-```
-git clone https://github.com/hcholab/lattigo.git
-cd lattigo
-git checkout lattigo_pca
-cd ..
-```
-
-2. Next, SF-GWAS also uses our own library of secret sharing-based multiparty computation routines. Additionally, the LMM pipeline requires a modified version provided in the branch `new256`. This can be obtained by running:
-```
-git clone https://github.com/hhcho/mpc-core
-cd mpc-core
-git checkout new256
-cd ..
-```
-
 ### Install SF-GWAS
 
 To install SF-GWAS, clone the repository and try building as follows.
@@ -44,15 +26,6 @@ git clone https://github.com/hhcho/sfgwas-lmm
 cd sfgwas-lmm
 cd lmm
 go build
-```
-
-Note that, if `lattigo` and `mpc-core` repos from the previous steps are cloned to a different location,
-update `../lattigo` and `../mpc-core` in the following lines of `sfgwas/go.mod`
-to point to the correct folders. The paths are relative, starting from the root directory of `sfgwas` repo where the `go.mod` file is located.
-
-```
-replace github.com/ldsec/lattigo/v2 => ../lattigo
-replace github.com/hhcho/mpc-core => ../mpc-core
 ```
 
 If `go build` produces an error, run any commands suggested by Go and try again. If the build
@@ -68,14 +41,14 @@ The example data is split between two parties. Each party's local data is stored
 `party1` and `party2` directories. Note that SF-GWAS can be run with more than two parties.
 
 Main input data files include:
-- `geno/chr[1-22].[pgen|psam|pvar]`: [PGEN files](https://www.cog-genomics.org/plink/2.0/input#pgen) for each chromosome. 
+- `geno/chr[1-22].[pgen|psam|pvar]`: [PGEN files](https://www.cog-genomics.org/plink/2.0/input#pgen) for each chromosome.
 - `pheno.txt`: each line includes the phenotype under study for each sample in the `.psam` file.
 - `cov.txt`: each line includes a tab-separated list of covariates for each sample in the `.psam` file.
 - `sample_keep.txt`: a list of sample IDs from the `.psam` file to include in the analysis; to be used with the `--keep` flag in PLINK2 (see [here](https://www.cog-genomics.org/plink/2.0/filter#sample) for file specification).
 
 ### Converting genotype data to binary block format
 
-For LMM-based workflow, we currently require that the PGEN files be combined and converted to our binary block format as follows: 
+For LMM-based workflow, we currently require that the PGEN files be combined and converted to our binary block format as follows:
 
 1. Convert the PGEN files to PLINK1.9 BED format using `plink2 --make-bed` command.
 2. Merge the BED files into a single file set using PLINK1.9 with the command `--merge-list`.
@@ -95,13 +68,13 @@ python3 scripts/matrix_text2bin_blocks.py [Input directory] [Number of parties] 
 
 ### Preparing additional input files
 
-We provide two preprocessing scripts in `scripts/` for producing additional input files needed for SF-GWAS. 
+We provide two preprocessing scripts in `scripts/` for producing additional input files needed for SF-GWAS.
 
 1. `createSnpInfoFiles.py` processes the provided `.pvar` files to create a number of files specifying variant information. It can be run as follows:
 
 `python3 createSnpInfoFiles.py PGEN_PREFIX OUTPUT_DIR`
 
-Note that `PGEN_PREFIX` is expected to be a format string including `%d` in place of the chromosome number (e.g., `geno/chr%d` for the example dataset), which the script sequentially replaces with the chromosome numbers 1-22. 
+Note that `PGEN_PREFIX` is expected to be a format string including `%d` in place of the chromosome number (e.g., `geno/chr%d` for the example dataset), which the script sequentially replaces with the chromosome numbers 1-22.
 
 This command generates the following three files in `OUTPUT_DIR`:
 - `chrom_sizes.txt`: the number of SNPs for each chromosome
@@ -114,7 +87,7 @@ This command generates the following three files in `OUTPUT_DIR`:
 
 `PGEN_PREFIX` is the same as before. `SAMPLE_KEEP` points to the `sample_keep.txt` described above as a main input file, including a list of sample IDs to be included in the analysis in a PLINK2-recognized format.
 
-This script generates `all.gcount.transpose.bin` in `OUTPUT_DIR`, which needs to be provided to SF-GWAS. It is a binary file encoding a 6-by-m matrix of precomputed allele, genotype, and missingness counts for all m variants in the dataset. 
+This script generates `all.gcount.transpose.bin` in `OUTPUT_DIR`, which needs to be provided to SF-GWAS. It is a binary file encoding a 6-by-m matrix of precomputed allele, genotype, and missingness counts for all m variants in the dataset.
 
 We provide both variant information files and the genotype counts for the example dataset in `example_data/`.
 
