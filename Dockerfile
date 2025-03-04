@@ -20,10 +20,8 @@ RUN echo install_weak_deps=0 >> /etc/dnf/dnf.conf && \
     microdnf remove -y unzip && \
     microdnf clean all
 
+COPY go.* .
+RUN go mod download
+
 COPY . .
-
-WORKDIR /build/lmm
-
-RUN go build
-
-
+RUN go build ./lmm
