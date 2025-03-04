@@ -20,6 +20,9 @@ If you'd like to re-build the image yourself, please run:
 docker build -t sfgwas-lmm .
 ```
 
+See also [Docker demo](#docker-demo) section below on how to run
+a series of self-contained tests in Docker.
+
 Alternatively, if you'd like to build the software without Docker,
 please follow the instructions below.
 
@@ -124,6 +127,16 @@ PID=[Party ID] go test -run TestAssoc -timeout 96h
 ```
 
 `[Party ID]` is set to 1 or 2 for the two parties for the example dataset. Note that a third auxiliary party with ID 0 also needs to run together with the main parties to facilitate the protocol.
+
+#### Docker demo
+
+Rather than running those commands manually, the provided Docker image
+executes a [demo.sh](scripts/demo.sh) script that automatically runs
+all 3 parties locally inside the container, for each of the test steps:
+
+```
+docker run --rm -it --pull always ghcr.io/hcholab/sfgwas-lmm
+```
 
 ### Output
 
