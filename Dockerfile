@@ -26,3 +26,5 @@ RUN go mod download
 COPY . .
 WORKDIR /build/lmm
 RUN --mount=type=cache,target=/root/.cache/go-build go build .
+
+CMD ["../scripts/demo.sh"]

@@ -2,14 +2,24 @@
 
 set -euo pipefail
 
-run_party() {
-    echo "Running party $1"
-    PID=$1 go test -run TestLevel0 -timeout 96h
-    PID=$1 go test -run TestLevel1 -timeout 96h
-    PID=$1 go test -run TestAssoc -timeout 96h
+cleanup() {
+  local sig=$(($? - 128))
+  echo "Caught $(kill -l $sig) signal. Killing all background processes and exiting..."
+  kill "$(jobs -p)" 2>/dev/null || true
 }
 
-run_party 0 &
-run_party 1 &
-run_party 2 &
-wait
+trap cleanup INT TERM EXIT
+
+run_test() {
+    echo "Running $1 for party $2"
+    PID=$2 go test -run "$1" -timeout 96h
+}
+
+for t in TestLevel0 TestLevel1 TestAssoc; do
+    for pid in 0 1 2; do
+        run_test $t $pid &
+    done
+    wait
+done
+
+trap - INT TERM EXIT
