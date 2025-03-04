@@ -10,6 +10,19 @@ This repository provides the code for linear mixed model (LMM)-based association
 
 ## Installation
 
+### Docker
+
+The repository provides both a [Dockerfile](Dockerfile) and a
+GitHub Container Registry image ([ghcr.io/hcholab/sfgwas-lmm](ghcr.io/hcholab/sfgwas-lmm)).
+If you'd like to re-build the image yourself, please run:
+
+```
+docker build -t sfgwas-lmm .
+```
+
+Alternatively, if you'd like to build the software without Docker,
+please follow the instructions below.
+
 ### Dependencies
 
 SF-GWAS requires that `go`, `python3`, and `plink2` are available in the exec path in shell. Here are the links for installation:
