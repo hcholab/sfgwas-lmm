@@ -7,8 +7,7 @@
 !/gwas
 !/lmm
 !/mpc
+!/scripts
 !go.*
 !LICENSE
 !README.md
-
-
