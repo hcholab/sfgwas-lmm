@@ -8,7 +8,7 @@ cleanup() {
   kill "$(jobs -p)" 2>/dev/null || true
 }
 
-trap cleanup INT TERM EXIT
+trap cleanup INT TERM
 
 run_test() {
     echo "Running $1 for party $2"
@@ -22,4 +22,4 @@ for t in TestLevel0 TestLevel1 TestAssoc; do
     wait
 done
 
-trap - INT TERM EXIT
+trap - INT TERM
