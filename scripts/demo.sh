@@ -58,7 +58,7 @@ for party in 1 2; do
 
     # Convert to binary format
     echo "Converting to binary format for party ${party}..."
-    python3 "${SCRIPTS_DIR}/plinkBedToBinary.py" \
+    "${SCRIPTS_DIR}/plinkBedToBinary.py" \
             "${COMBINED}.bed" \
             "${SAMPLE_COUNT}" \
             "${SNP_COUNT}" \
