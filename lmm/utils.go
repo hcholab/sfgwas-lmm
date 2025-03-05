@@ -375,7 +375,7 @@ func readIntSliceFromFile(filename string, numLines int) []int {
 	file, err := os.Open(filename)
 
 	if err != nil {
-		log.Fatalf("failed to open:")
+		log.Fatalf("failed to open: %s", filename)
 		panic(err)
 	}
 	scanner := bufio.NewScanner(file)
@@ -384,17 +384,17 @@ func readIntSliceFromFile(filename string, numLines int) []int {
 	out := make([]int, numLines)
 	for i := 0; i < numLines; i++ {
 		if !scanner.Scan() {
-			log.Fatalf("not enough lines in")
+			log.Fatalf("not enough lines in %s: %d", filename, numLines)
 		}
 
 		out[i], err = strconv.Atoi(scanner.Text())
 		if err != nil {
-			log.Fatalf("parse error:")
+			log.Fatalf("parse error in %s: %s", filename, err.Error())
 		}
 	}
 
 	if scanner.Scan() {
-		log.Fatalf("too many lines in")
+		log.Fatalf("too many lines in %s", filename)
 	}
 
 	file.Close()
@@ -419,7 +419,7 @@ func DummyPlaceInnerSum(cryptoParams *crypto.CryptoParams, X *ckks.Ciphertext) *
 	return res
 }
 
-//dummy
+// dummy
 func CipherVectorSqrtInverseDummy(cryptoParams *crypto.CryptoParams, X crypto.CipherVector, n int) crypto.CipherVector {
 	// log.LLvl1(time.Now().Format(time.StampMilli),"n int: ", n)
 	XP := crypto.DecryptFloatVector(cryptoParams, X, n)
