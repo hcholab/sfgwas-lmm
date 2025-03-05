@@ -1,4 +1,4 @@
-# hadolint global ignore=DL3006,DL3013,DL3018,DL3041,DL3059
+# hadolint global ignore=DL3006,DL3041
 
 FROM redhat/ubi9-minimal AS base
 
@@ -15,8 +15,10 @@ RUN echo install_weak_deps=0 >> /etc/dnf/dnf.conf && \
     && \
     ARCH=$(grep -q avx2 /proc/cpuinfo && [ "${MARCH}" = "native" ] || [ "${MARCH}" = "x86-64-v3" ] && echo "avx2" || echo "x86_64") && \
     curl -so plink2.zip "https://s3.amazonaws.com/plink2-assets/plink2_linux_${ARCH}_latest.zip" && \
-    unzip plink2.zip && \
-    rm plink2.zip vcf_subset && \
+    unzip plink2.zip plink2 && \
+    curl -so plink.zip "https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_latest.zip" && \
+    unzip plink.zip plink && \
+    rm ./*.zip && \
     microdnf remove -y unzip && \
     microdnf clean all
 
