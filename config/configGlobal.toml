@@ -14,7 +14,7 @@ mpc_num_main_threads = 21
 #mpc_objs_per_block = 6
 #mpc_num_main_threads = 1
 
-memory_limit = 120000000000  # 120GB
+memory_limit = 120000000000 # 120GB
 
 mpc_field_size = 256
 mpc_data_bits = 120
@@ -23,14 +23,14 @@ mpc_frac_bits = 40
 calc_g_capacity = 6
 
 ## Data dimensions
-num_inds = [0,1000,1000]
+num_inds = [0, 1000, 1000]
 num_snps = 100000
 num_covs = 5
-geno_num_blocks = 82
+geno_num_blocks = 22
 geno_num_folds = 5
 
 step_2_num_snps = 100000
-step_2_geno_num_blocks = 82
+step_2_geno_num_blocks = 22
 
 ## Networking parameters
 # Party with a smaller ID listens for connection
@@ -38,11 +38,11 @@ step_2_geno_num_blocks = 82
 
 [servers.party0]
 ipaddr = "127.0.0.1"
-ports  = {party1 = "8020", party2 = "8220"}  # Port numbers need to be at least mpc_num_threads apart
+ports = { party1 = "8020", party2 = "8220" } # Port numbers need to be at least mpc_num_threads apart
 
 [servers.party1]
 ipaddr = "127.0.0.1"
-ports  = {party2 = "8420"}
+ports = { party2 = "8420" }
 
 [servers.party2]
 ipaddr = "127.0.0.1"
