@@ -38,7 +38,7 @@ for chr in range(1, 23):
                 first_line = False
                 continue
             tok = line.split("\t")
-            all_file.write("\t".join(tok[4:10]) + "\n")
+            all_file.write("\t".join(tok[5:11]))  # last column already ends with \n
 
     print(f"Geno counts for chromosome {chr} added to: {all_fname}")
 
