@@ -50,10 +50,9 @@ for party in $(seq "${NUM_PARTIES}"); do
           --out "${COMBINED}"
 
     ## Step 3. Convert BED to binary format
-    SAMPLE_COUNT=$(wc -l < "${COMBINED}.fam")
-    SAMPLE_COUNT=$((SAMPLE_COUNT))
-    SNP_COUNT=$(wc -l < "${COMBINED}.bim")
-    SNP_COUNT=$((SNP_COUNT))
+    SAMPLE_KEEP="${PARTY_DIR}/sample_keep.txt"
+    SAMPLE_COUNT=$(wc -l < "${SAMPLE_KEEP}" | cut -d\  -f1)
+    SNP_COUNT=$(wc -l < "${PARTY_DIR}/snp_ids.txt" | cut -d\  -f1)
 
     echo "Party ${party} has ${SAMPLE_COUNT} samples and ${SNP_COUNT} SNPs."
     echo "Converting ${COMBINED}.bed to binary format..."
@@ -64,43 +63,16 @@ for party in $(seq "${NUM_PARTIES}"); do
         "${SNP_COUNT}" \
         "${COMBINED}.bin"
 
-    ## Prepare additional input files
-
-    # Create chrom_sizes.txt if needed
-    if [ ! -f "${PARTY_DIR}/chrom_sizes.txt" ]; then
-        echo "Generating chrom_sizes.txt..."
-        for chr in {1..22}; do
-            SNP_COUNT_CHR=$(grep -c "^${chr}\s" "${COMBINED}.bim" || echo "0")
-            echo "${SNP_COUNT_CHR}" >> "${PARTY_DIR}/chrom_sizes.txt"
-        done
-    fi
-
-    # Create snp_ids.txt if needed
-    if [ ! -f "${PARTY_DIR}/snp_ids.txt" ]; then
-        echo "Generating snp_ids.txt..."
-        awk '{print $2}' "${COMBINED}.bim" > "${PARTY_DIR}/snp_ids.txt"
-    fi
-
-    # Create snp_pos.txt if needed
-    if [ ! -f "${PARTY_DIR}/snp_pos.txt" ]; then
-        echo "Generating snp_pos.txt..."
-        awk '{print $1 "\t" $4}' "${COMBINED}.bim" > "${PARTY_DIR}/snp_pos.txt"
-    fi
-
-    # Precompute genotype counts
-    if [ ! -f "${PARTY_DIR}/all.gcount.transpose.bin" ]; then
-        echo "Precomputing genotype counts for party ${party}..."
-        precompute_geno_counts.sh "${PARTY_DIR}/all"
-    fi
-
-    ## Step 4. Generate matrix blocks.
-    echo "Generating matrix blocks..."
+    ## Step 4.1. Prepare additional input files
+    PGEN_PREFIX="${PARTY_DIR}/geno/chr%d"
+    createSnpInfoFiles.py "${PGEN_PREFIX}" "${PARTY_DIR}"
+    computeGenoCounts.py "${PGEN_PREFIX}" "${SAMPLE_KEEP}" "${PARTY_DIR}/geno"
     echo "${SAMPLE_COUNT}" > "${PARTY_DIR}/count.txt"
     echo "${SNP_COUNT}" >> "${PARTY_DIR}/count.txt"
 done
 
+ ## Step 4.2. Generate matrix blocks.
 BLOCK_SIZE=8192
-
 matrix_text2bin_blocks.py \
     "${DATA_DIR}" \
     "${NUM_PARTIES}" \
