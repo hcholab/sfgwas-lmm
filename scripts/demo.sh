@@ -10,14 +10,14 @@ cleanup() {
 
 trap cleanup INT TERM
 
-BASE_DIR=$(realpath "$(dirname "$(dirname "$0")")")
-CONFIG_DIR="${BASE_DIR}/config"
-DATA_DIR="${1:-${BASE_DIR}/example_data}"
-SCRIPTS_DIR="${BASE_DIR}/scripts"
-
+### Process data for each party
 echo "Preparing data for tests..."
 
-# Process data for each party
+BASE_DIR=$(realpath "$(dirname "$(dirname "$0")")")
+DATA_DIR="${1:-${BASE_DIR}/example_data}"
+CONFIG_DIR="${BASE_DIR}/config"
+PATH="${BASE_DIR}/scripts:${PATH}"
+
 get_config_global() {
     grep "$1" "${CONFIG_DIR}/configGlobal.toml" | cut -d= -f2 | tr -d ' '
 }
@@ -32,9 +32,9 @@ for party in $(seq "${NUM_PARTIES}"); do
     ## Step 1. Convert PGEN files to PLINK1.9 BED format
     for chr in {1..22}; do
         echo "Converting chromosome ${chr} to BED format..."
-        "${BASE_DIR}/plink2" --make-bed \
-            --pfile "${PARTY_DIR}/geno/chr${chr}" \
-            --out "${PARTY_DIR}/chr${chr}"
+        plink2 --make-bed \
+               --pfile "${PARTY_DIR}/geno/chr${chr}" \
+               --out "${PARTY_DIR}/chr${chr}"
     done
 
     ## Step 2. Merge BED files
@@ -44,10 +44,10 @@ for party in $(seq "${NUM_PARTIES}"); do
         echo "${PARTY_DIR}/chr${chr}" >> "${MERGE_LIST}"
     done
     COMBINED="${PARTY_DIR}/combined"
-    "${BASE_DIR}/plink" --make-bed \
-        --bfile "${PARTY_DIR}/chr1" \
-        --merge-list "${MERGE_LIST}" \
-        --out "${COMBINED}"
+    plink --make-bed \
+          --bfile "${PARTY_DIR}/chr1" \
+          --merge-list "${MERGE_LIST}" \
+          --out "${COMBINED}"
 
     ## Step 3. Convert BED to binary format
     SAMPLE_COUNT=$(wc -l < "${COMBINED}.fam")
@@ -58,11 +58,11 @@ for party in $(seq "${NUM_PARTIES}"); do
     echo "Party ${party} has ${SAMPLE_COUNT} samples and ${SNP_COUNT} SNPs."
     echo "Converting ${COMBINED}.bed to binary format..."
 
-    "${SCRIPTS_DIR}/plinkBedToBinary.py" \
-            "${COMBINED}.bed" \
-            "${SAMPLE_COUNT}" \
-            "${SNP_COUNT}" \
-            "${COMBINED}.bin"
+    plinkBedToBinary.py \
+        "${COMBINED}.bed" \
+        "${SAMPLE_COUNT}" \
+        "${SNP_COUNT}" \
+        "${COMBINED}.bin"
 
     ## Prepare additional input files
 
@@ -90,7 +90,7 @@ for party in $(seq "${NUM_PARTIES}"); do
     # Precompute genotype counts
     if [ ! -f "${PARTY_DIR}/all.gcount.transpose.bin" ]; then
         echo "Precomputing genotype counts for party ${party}..."
-        PATH="${SCRIPTS_DIR}:$PATH" "precompute_geno_counts.sh" "${PARTY_DIR}/all"
+        precompute_geno_counts.sh "${PARTY_DIR}/all"
     fi
 
     ## Step 4. Generate matrix blocks.
@@ -101,7 +101,7 @@ done
 
 BLOCK_SIZE=8192
 
-"${SCRIPTS_DIR}/matrix_text2bin_blocks.py" \
+matrix_text2bin_blocks.py \
     "${DATA_DIR}" \
     "${NUM_PARTIES}" \
     "$(get_config_global geno_num_folds)" \
@@ -116,6 +116,7 @@ for party in $(seq 0 "${NUM_PARTIES}"); do
     sed -i "s|../example_data|${DATA_DIR}|g" "${CONFIG_DIR}/configLocal.Party${party}.toml"
 done
 
+### Run tests
 run_test() {
     echo "Running $1 for party $2"
     PID=$2 go test -run "$1" -timeout 96h
