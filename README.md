@@ -4,7 +4,7 @@ Software for secure and federated genome-wide association studies, as described 
 
 **Secure and Federated Genome-Wide Association Studies for Biobank-Scale Datasets**\
 Hyunghoon Cho, David Froelicher, Jeffrey Chen, Manaswitha Edupalli, Apostolos Pyrgelis, Juan R. Troncoso-Pastoriza, Jean-Pierre Hubaux, Bonnie Berger\
-Under review, 2022
+Nature Genetics, 2025
 
 This repository provides the code for linear mixed model (LMM)-based association analysis. For PCA-based GWAS, see [here](https://github.com/hhcho/sfgwas).
 
