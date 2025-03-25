@@ -813,14 +813,11 @@ func MatTClear(gfs *GenoFileStream, B *mat.Dense) *mat.Dense {
 		}
 		var slicedB mat.Matrix
 		if b == blocks-1 {
-			slicedB = B.Slice(b*blockSize, realSize+b*blockSize, 0, c) // numRows%blockSize+b*blockSize, 0, c)
+			slicedB = B.Slice(b*blockSize, realSize+b*blockSize, 0, c)
 		} else {
 			slicedB = B.Slice(b*blockSize, (b+1)*blockSize, 0, c)
 		}
 		newRes := mat.NewDense(numCols, c, nil)
-		ar, ac := block.T().Dims()
-		br, bc := slicedB.Dims()
-		fmt.Printf("newRes.Mul(block.T(), slicedB): %d x %d * %d x %d, numRows %d, blockSize %d\n", ar, ac, br, bc, numRows, blockSize)
 		newRes.Mul(block.T(), slicedB)
 		out.Add(out, newRes)
 	}
