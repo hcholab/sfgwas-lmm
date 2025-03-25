@@ -820,7 +820,7 @@ func MatTClear(gfs *GenoFileStream, B *mat.Dense) *mat.Dense {
 		newRes := mat.NewDense(numCols, c, nil)
 		ar, ac := block.T().Dims()
 		br, bc := slicedB.Dims()
-		fmt.Printf("newRes.Mul(block.T(), slicedB): %d x %d * %d x %d\n", ar, ac, br, bc)
+		fmt.Printf("newRes.Mul(block.T(), slicedB): %d x %d * %d x %d, numRows %d, blockSize %d\n", ar, ac, br, bc, numRows, blockSize)
 		newRes.Mul(block.T(), slicedB)
 		out.Add(out, newRes)
 	}
