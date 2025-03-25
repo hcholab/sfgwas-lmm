@@ -813,7 +813,7 @@ func MatTClear(gfs *GenoFileStream, B *mat.Dense) *mat.Dense {
 		}
 		var slicedB mat.Matrix
 		if b == blocks-1 {
-			slicedB = B.Slice(b*blockSize, numRows%blockSize+b*blockSize, 0, c)
+			slicedB = B.Slice(b*blockSize, realSize+b*blockSize, 0, c) // numRows%blockSize+b*blockSize, 0, c)
 		} else {
 			slicedB = B.Slice(b*blockSize, (b+1)*blockSize, 0, c)
 		}
