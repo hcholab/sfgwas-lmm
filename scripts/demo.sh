@@ -96,6 +96,9 @@ run_test() {
 
 for t in TestLevel0 TestLevel1 TestAssoc; do
     for pid in $(seq 0 "${NUM_PARTIES}"); do
+        if [ "$t" == "TestAssoc" ] && [ "$pid" -eq 0 ]; then
+            continue
+        fi
         run_test $t "$pid" &
     done
     wait
