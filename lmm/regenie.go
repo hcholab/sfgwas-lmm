@@ -1118,15 +1118,15 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 		totalInds += config.NumInds[i]
 	}
 	reg.AllN = totalInds
-	genoFoldSizes := readIntSliceFromFile(config.GenoFoldSizeFile, config.GenoNumFolds)
+	genoFoldSizes := readIntSliceFromFile(config.GenoFoldSizeFile, "geno_fold_size_file", config.GenoNumFolds)
 	reg.general.SetGenoFoldSizes(genoFoldSizes)
 
 	prefix := ""
 	if isStep1 {
 		reg.B = config.GenoNumBlocks
 		reg.M = config.NumSnps
-		genoBlockSizes := readIntSliceFromFile(config.GenoBlockSizeFile, config.GenoNumBlocks)
-		genoBlockToChr := readIntSliceFromFile(config.GenoBlockToChromFile, config.GenoNumBlocks)
+		genoBlockSizes := readIntSliceFromFile(config.GenoBlockSizeFile, "geno_block_size_file", config.GenoNumBlocks)
+		genoBlockToChr := readIntSliceFromFile(config.GenoBlockToChromFile, "geno_block_to_chrom_file", config.GenoNumBlocks)
 		numChrs := maxIntSlice(genoBlockToChr) + 1
 
 		if sumIntSlice(genoBlockSizes) != config.NumSnps {
@@ -1153,8 +1153,8 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 	} else {
 		reg.B = config.Step2GenoNumBlocks
 		reg.M = config.Step2NumSnps
-		genoBlockSizes := readIntSliceFromFile(config.Step2GenoBlockSizeFile, config.Step2GenoNumBlocks)
-		genoBlockToChr := readIntSliceFromFile(config.Step2GenoBlockToChromFile, config.Step2GenoNumBlocks)
+		genoBlockSizes := readIntSliceFromFile(config.Step2GenoBlockSizeFile, "step_2_geno_block_size_file", config.Step2GenoNumBlocks)
+		genoBlockToChr := readIntSliceFromFile(config.Step2GenoBlockToChromFile, "step_2_geno_block_to_chrom_file", config.Step2GenoNumBlocks)
 		numChrs := maxIntSlice(genoBlockToChr) + 1
 
 		if sumIntSlice(genoBlockSizes) != config.NumSnps {

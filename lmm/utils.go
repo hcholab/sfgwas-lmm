@@ -371,11 +371,11 @@ func sumIntSlice(slice []int) int {
 	return out
 }
 
-func readIntSliceFromFile(filename string, numLines int) []int {
+func readIntSliceFromFile(filename string, configname string, numLines int) []int {
 	file, err := os.Open(filename)
 
 	if err != nil {
-		log.Fatalf("failed to open: %s", filename)
+		log.Fatalf("failed to open: %s defined by config %s", filename, configname)
 		panic(err)
 	}
 	scanner := bufio.NewScanner(file)
