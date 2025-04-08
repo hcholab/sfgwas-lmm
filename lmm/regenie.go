@@ -427,6 +427,7 @@ func (reg *REGENIE) Level1() []HorCipherVector {
 					fname := reg.general.OutFile("yloco/cipher_yloco" + strconv.Itoa(p) + "_" + strconv.Itoa(k) + "_" + strconv.Itoa(chr) + ".txt")
 					if pid == p {
 						crypto.SaveCipherMatrixToFile(cps, crypto.CipherMatrix{yLOCO[chr][k]}, fname)
+						log.Info(">>>>> Saved yloco: ", fname)
 					}
 				}
 			}
@@ -455,7 +456,7 @@ func (reg *REGENIE) Load_Completed_YLOCO() []HorCipherVector {
 				}
 
 			} else {
-				panic("Didn't have ylocos")
+				panic(fmt.Sprintf("Didn't have ylocos: %s", reg.general.OutFile(fname)))
 			}
 		}
 
