@@ -95,10 +95,14 @@ run_test() {
 }
 
 for t in TestLevel0 TestLevel1 TestAssoc; do
+    job_ids=()
     for pid in $(seq 0 "${NUM_PARTIES}"); do
         run_test $t "$pid" &
+        job_ids[pid]=$!
     done
-    wait
+    for job_id in "${job_ids[@]}"; do
+        wait "$job_id"
+    done
 done
 
 trap - INT TERM
