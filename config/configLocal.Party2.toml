@@ -17,8 +17,8 @@ pheno_file = "../example_data/party2/pheno.txt"
 covar_file = "../example_data/party2/cov.txt"
 
 ## Output and cache paths
-output_dir = "out/party2"
-cache_dir = "cache/party2"
+output_dir = "../example_data/out/party2"
+cache_dir = "../example_data/cache/party2"
 
 ## Computational paramters
 local_num_threads = 63
