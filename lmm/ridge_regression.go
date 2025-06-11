@@ -19,7 +19,7 @@ import (
 	"github.com/ldsec/lattigo/v2/ckks"
 )
 
-//DUMMY FUNCTION
+// DUMMY FUNCTION
 func (reg *REGENIE) RidgeRegressionCGD(cps *crypto.CryptoParams, mpcObj *mpc.MPC, lambdas []float64, fold, block int) crypto.CipherMatrix {
 	var res crypto.CipherMatrix
 	return res
@@ -142,14 +142,14 @@ func (reg *REGENIE) RidgeRegressionLevel1(cps *crypto.CryptoParams, mpcObjs *mpc
 
 type LazyMult func(x crypto.CipherVector) crypto.CipherVector
 
-//make into batches?
+// make into batches?
 func ConjGradSolveCipherVec(cps *crypto.CryptoParams, mpcObjs *mpc.ParallelMPC, b crypto.CipherVector, b_len int, initialX crypto.CipherVector, LazyMult LazyMult, max_iter int, refresh_rate int) (crypto.CipherVector, int, bool) {
 	useDummyBoot := false
 	mpcObj := (*mpcObjs)[0]
 	pid := mpcObjs.GetPid()
 	//peeks at residual together after 3 iterations to see if there is progress
 	RESPEEK := 10
-	RESTHRES := 1e-3
+	RESTHRES := 1e-2
 	x := CZeros(cps, b_len)
 	var p, r crypto.CipherVector
 	if pid > 0 {
