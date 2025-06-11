@@ -26,8 +26,8 @@ COPY go.* .
 RUN go mod download
 
 COPY . .
-WORKDIR /build/lmm
-RUN --mount=type=cache,target=/root/.cache/go-build go build . && \
-    mv ../plink* ../scripts/
+WORKDIR /build/scripts
+RUN --mount=type=cache,target=/root/.cache/go-build go test -c -o sfgwas-lmm ../lmm && \
+    mv ../plink* .
 
-ENTRYPOINT ["../scripts/demo.sh"]
+ENTRYPOINT ["./demo.sh"]

@@ -13,7 +13,7 @@ trap cleanup INT TERM
 ### Process data for each party
 echo "Preparing data for tests..."
 
-BASE_DIR=$(realpath "$(dirname "$(dirname "$0")")")
+BASE_DIR=$(dirname "$(realpath "$(dirname "$0")")")
 DATA_DIR="${1:-${BASE_DIR}/example_data}"
 CONFIG_DIR="${BASE_DIR}/config"
 PATH="${BASE_DIR}/scripts:${PATH}"
@@ -91,7 +91,7 @@ done
 ### Run tests
 run_test() {
     echo "Running $1 for party $2"
-    PID=$2 go test -run "$1" -timeout 96h
+    PID=$2 sfgwas-lmm -test.run "$1" -test.timeout 96h
 }
 
 for t in TestLevel0 TestLevel1 TestAssoc; do
