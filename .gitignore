@@ -24,15 +24,10 @@ example_data/party0/
 example_data/party1/
 example_data/party2/
 
-!example_data/party1/all.gcount.transpose.bin
-!example_data/party2/all.gcount.transpose.bin
+!example_data/party*/cov.txt
+!example_data/party*/pheno.txt
+!example_data/party*/sample_keep.txt
 
-!example_data/party1/*.txt
-!example_data/party2/*.txt
-
-!example_data/party1/geno/*.pgen
-!example_data/party1/geno/*.psam
-!example_data/party1/geno/*.pvar
-!example_data/party2/geno/*.pgen
-!example_data/party2/geno/*.psam
-!example_data/party2/geno/*.pvar
+!example_data/party*/geno/*.pgen
+!example_data/party*/geno/*.psam
+!example_data/party*/geno/*.pvar
