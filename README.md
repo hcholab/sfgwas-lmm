@@ -62,7 +62,24 @@ Main input data files include:
 - `cov.txt`: each line includes a tab-separated list of covariates for each sample in the `.psam` file.
 - `sample_keep.txt`: a list of sample IDs from the `.psam` file to include in the analysis; to be used with the `--keep` flag in PLINK2 (see [here](https://www.cog-genomics.org/plink/2.0/filter#sample) for file specification).
 
-### Converting genotype data to binary block format
+### Data preparation
+
+We provide a turn-key script [data_prep.sh](scripts/data_prep.sh) that does all of the necessary
+input data pre-processing. You can use it on each of the parties 1 and 2 using
+
+```sh
+./scripts/data_prep.sh [Party ID] path/to/data/party[Party ID]
+```
+
+where `[Party ID]` is set to 1 or 2 for the two compute parties.
+
+Note that a third auxiliary party with ID 0 also needs to run together with the main parties to facilitate the protocol. Its data folder needs to contain only the files
+`blockSizes.txt`, `blockToChrom.txt`, `foldSizes.txt`, and `snp_pos.txt`
+copied over from either party 1 or party 2 folder, after that one is pre-processed.
+
+However, if you wish to pre-process all data manually, the steps to do that are explained below.
+
+#### Converting genotype data to binary block format
 
 For LMM-based workflow, we currently require that the PGEN files be combined and converted to our binary block format as follows:
 
@@ -82,7 +99,7 @@ python3 scripts/matrix_text2bin_blocks.py [Input directory] [Number of parties] 
 
 5. Update the config files accordingly to provide the paths to the block-format genotype files.
 
-### Preparing additional input files
+#### Preparing additional input files
 
 We provide two preprocessing scripts in `scripts/` for producing additional input files needed for SF-GWAS.
 
@@ -125,8 +142,6 @@ PID=[Party ID] go test -run TestLevel0 -timeout 96h
 PID=[Party ID] go test -run TestLevel1 -timeout 96h
 PID=[Party ID] go test -run TestAssoc -timeout 96h
 ```
-
-`[Party ID]` is set to 1 or 2 for the two parties for the example dataset. Note that a third auxiliary party with ID 0 also needs to run together with the main parties to facilitate the protocol.
 
 #### Docker demo
 
