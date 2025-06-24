@@ -11,14 +11,12 @@ cleanup() {
 trap cleanup INT TERM
 
 ### Process data for each party
-echo "Preparing data for tests..."
+echo "Preprocessing data for tests..."
 
 BASE_DIR=$(dirname "$(realpath "$(dirname "$0")")")
 DATA_DIR="${1:-${BASE_DIR}/example_data}"
 CONFIG_DIR="${BASE_DIR}/config"
 PATH="${BASE_DIR}/scripts:${PATH}"
-
-echo "Preparing data..."
 
 # P1 and P2
 for pid in 1 2; do
