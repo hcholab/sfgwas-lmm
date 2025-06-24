@@ -50,6 +50,8 @@ func NewRegenie() *REGENIE {
 	}
 	fmt.Println("totalInds", totalInds)
 
+	log.ParseEnv()
+
 	return &REGENIE{
 		general:            general,
 		num_iteration_lvl1: []int{25, 90, 115, 155, 200},
