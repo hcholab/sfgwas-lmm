@@ -62,10 +62,10 @@ Main input data files include:
 - `cov.txt`: each line includes a tab-separated list of covariates for each sample in the `.psam` file.
 - `sample_keep.txt`: a list of sample IDs from the `.psam` file to include in the analysis; to be used with the `--keep` flag in PLINK2 (see [here](https://www.cog-genomics.org/plink/2.0/filter#sample) for file specification).
 
-### Data preparation
+### Data preprocessing
 
-We provide a turn-key script [data_prep.sh](scripts/data_prep.sh) that does all of the necessary
-input data pre-processing. You can use it on each of the parties 1 and 2 using
+We provide a turn-key script [data_prep.sh](scripts/data_prep.sh) that does all of the required
+input data preprocessing:
 
 ```sh
 ./scripts/data_prep.sh [Party ID] path/to/data/party[Party ID]
@@ -75,9 +75,9 @@ where `[Party ID]` is set to 1 or 2 for the two compute parties.
 
 Note that a third auxiliary party with ID 0 also needs to run together with the main parties to facilitate the protocol. Its data folder needs to contain only the files
 `blockSizes.txt`, `blockToChrom.txt`, `foldSizes.txt`, and `snp_pos.txt`
-copied over from either party 1 or party 2 folder, after that one is pre-processed.
+copied over from either party 1 or party 2 folder, after that one is preprocessed.
 
-However, if you wish to pre-process all data manually, the steps to do that are explained below.
+However, if you wish to preprocess all data manually, the steps to do that are explained below.
 
 #### Converting genotype data to binary block format
 
