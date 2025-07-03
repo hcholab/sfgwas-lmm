@@ -1146,9 +1146,11 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 
 		gwasParams := gwas.InitGWASParams(config.NumInds, config.NumSnps, config.NumCovs, config.NumPCs, config.SnpDistThres)
 		reg.general.SetGWASParams(gwasParams)
-		pos := gwas.LoadSNPPositionFile(config.SnpPosFile, '\t')
-		log.LLvl1(time.Now(), "First few SNP positions:", pos[:5])
-		reg.general.SetPos(pos)
+		if pid > 0 {
+			pos := gwas.LoadSNPPositionFile(config.SnpPosFile, '\t')
+			log.LLvl1(time.Now(), "First few SNP positions:", pos[:5])
+			reg.general.SetPos(pos)
+		}
 		prefix = reg.general.GetConfig().GenoBinFilePrefix
 
 	} else {
@@ -1174,9 +1176,11 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 
 		gwasParams := gwas.InitGWASParams(config.NumInds, config.Step2NumSnps, config.NumCovs, config.NumPCs, config.SnpDistThres)
 		reg.general.SetGWASParams(gwasParams)
-		pos := gwas.LoadSNPPositionFile(config.Step2SnpPosFile, '\t')
-		log.LLvl1(time.Now(), "First few SNP positions:", pos[:5])
-		reg.general.SetPos(pos)
+		if pid > 0 {
+			pos := gwas.LoadSNPPositionFile(config.Step2SnpPosFile, '\t')
+			log.LLvl1(time.Now(), "First few SNP positions:", pos[:5])
+			reg.general.SetPos(pos)
+		}
 		prefix = reg.general.GetConfig().Step2GenoBinFilePrefix
 	}
 

@@ -12,8 +12,6 @@ geno_fold_size_file = "../example_data/party0/foldSizes.txt"
 
 geno_block_size_file = "../example_data/party0/blockSizes.txt"
 geno_block_to_chrom_file = "../example_data/party0/blockToChrom.txt"
-snp_position_file = "../example_data/party0/snp_pos.txt"
 
 step_2_geno_block_size_file = "../example_data/party0/blockSizes.txt"
 step_2_geno_block_to_chrom_file = "../example_data/party0/blockToChrom.txt"
-step_2_snp_position_file = "../example_data/party0/snp_pos.txt"
