@@ -16,6 +16,7 @@ type Config struct {
 	NumInds []int `toml:"num_inds"`
 	NumSnps int   `toml:"num_snps"`
 	NumCovs int   `toml:"num_covs"`
+	NumChrs int   `toml:"num_chrs"`
 
 	ItersPerEval  int `toml:"iter_per_eigenval"`
 	NumPCs        int `toml:"num_pcs_to_remove"`

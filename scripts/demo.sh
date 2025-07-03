@@ -26,9 +26,7 @@ done
 # Copy shared data from P1 to P0
 P0_DIR="${DATA_DIR}/party0"
 mkdir -p "${P0_DIR}"
-for f in "blockSizes.txt" "blockToChrom.txt" ; do
-   cp "${DATA_DIR}/party1/${f}" "${P0_DIR}/"
-done
+cp "${DATA_DIR}/party1/blockSizes.txt" "${P0_DIR}/"
 sed -i "s|../example_data|${DATA_DIR}|g" "${CONFIG_DIR}/configLocal.Party0.toml"
 
 ### Run tests
