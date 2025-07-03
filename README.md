@@ -74,8 +74,7 @@ input data preprocessing:
 where `[Party ID]` is set to 1 or 2 for the two compute parties.
 
 Note that a third auxiliary party with ID 0 also needs to run together with the main parties to facilitate the protocol. Its data folder needs to contain only the files
-`blockSizes.txt`, `blockToChrom.txt`, `foldSizes.txt`, and `snp_pos.txt`
-copied over from either party 1 or party 2 folder, after that one is preprocessed.
+`blockSizes.txt` and `blockToChrom.txt` copied over from either party 1 or party 2 folder, after that one is preprocessed.
 
 However, if you wish to preprocess all data manually, the steps to do that are explained below.
 

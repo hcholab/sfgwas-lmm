@@ -1119,8 +1119,12 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 		totalInds += config.NumInds[i]
 	}
 	reg.AllN = totalInds
-	genoFoldSizes := readIntSliceFromFile(config.GenoFoldSizeFile, "geno_fold_size_file", pid, config.GenoNumFolds)
-	reg.general.SetGenoFoldSizes(genoFoldSizes)
+
+	var genoFoldSizes []int
+	if pid > 0 {
+		genoFoldSizes = readIntSliceFromFile(config.GenoFoldSizeFile, "geno_fold_size_file", pid, config.GenoNumFolds)
+		reg.general.SetGenoFoldSizes(genoFoldSizes)
+	}
 
 	prefix := ""
 	if isStep1 {
