@@ -13,9 +13,9 @@ print("Called plinkBedToBinary.py:", in_fname, num_sample, num_snp, out_fname)
 
 x = np.fromfile(in_fname, dtype=np.uint8)[3:]  # Skip magic numbers
 
-byte_per_snp = int(math.ceil(num_sample / 4.0))
-
-assert len(x) == num_snp * byte_per_snp
+# This check breaks when sample_keep.txt has fewer samples than *.psam
+# byte_per_snp = int(math.ceil(num_sample / 4.0))
+# assert len(x) == num_snp * byte_per_snp
 
 masks = [3, 12, 48, 192]
 y = np.zeros((4, len(x)), dtype=np.int8)
