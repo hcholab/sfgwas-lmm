@@ -35,13 +35,13 @@ plink --make-bed \
 echo "Computing geno counts..."
 PGEN_PREFIX="${DATA_DIR}/geno/chr%d"
 SAMPLE_KEEP="${DATA_DIR}/sample_keep.txt"
-SAMPLE_COUNT=$(wc -l < "${SAMPLE_KEEP}" | cut -d\  -f1)
+SAMPLE_COUNT=$(sed -n '$=' "${SAMPLE_KEEP}")
 computeGenoCounts.py "${PGEN_PREFIX}" "${SAMPLE_KEEP}" "${DATA_DIR}/geno"
 
 ## Step 3.2
 echo "Extracting SNP info..."
 createSnpInfoFiles.py "${PGEN_PREFIX}" "${DATA_DIR}"
-SNP_COUNT=$(wc -l < "${DATA_DIR}/snp_ids.txt" | cut -d\  -f1)
+SNP_COUNT=$(sed -n '$=' "${DATA_DIR}/snp_ids.txt")
 echo "${SAMPLE_COUNT}" > "${DATA_DIR}/count.txt"
 echo "${SNP_COUNT}" >> "${DATA_DIR}/count.txt"
 echo "${SAMPLE_COUNT} samples and ${SNP_COUNT} SNPs."
