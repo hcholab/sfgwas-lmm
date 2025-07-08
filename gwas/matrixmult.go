@@ -12,7 +12,7 @@ import (
 	"math"
 
 	"github.com/ldsec/lattigo/v2/ckks"
-
+	"go.dedis.ch/onet/v3/log"
 	"gonum.org/v1/gonum/mat"
 )
 
@@ -796,7 +796,7 @@ func MatTClear(gfs *GenoFileStream, B *mat.Dense) *mat.Dense {
 	numCols := int(gfs.NumCols())
 	blockSize := 100 // need to set
 	if gfs.numRows < 100 {
-		panic("num rows less than blocksize")
+		log.Warn("num rows less than blocksize")
 	}
 	blocks := ((numRows - 1) / blockSize) + 1
 	out := mat.NewDense(numCols, c, nil)
