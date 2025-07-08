@@ -21,6 +21,9 @@ csize_file = open(csize_fname, 'w')
 for chr in range(1, 23):
     pvar_fname = (pgen_filename_template % chr) + ".pvar"
 
+    if not os.path.exists(pvar_fname):
+        continue
+
     with open(pvar_fname, "r") as fp:
         first_line = True
         count = 0

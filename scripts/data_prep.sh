@@ -12,19 +12,23 @@ PATH="${BASE_DIR}/scripts:${PATH}"
 echo "Preprocessing data for party ${PID}..."
 
 ## Step 1
+MERGE_LIST="${DATA_DIR}/merge_list.txt"
+rm -f "${MERGE_LIST}"
 for chr in {1..22}; do
+    if [ ! -f "${DATA_DIR}/geno/chr${chr}.pvar" ]; then
+        continue
+    fi
     echo "Converting chromosome ${chr} to PLINK1.9BED format..."
     plink2 --make-bed \
            --pfile "${DATA_DIR}/geno/chr${chr}" \
            --out "${DATA_DIR}/chr${chr}"
+    if [ "$chr" -gt 1 ]; then
+        echo "${DATA_DIR}/chr${chr}" >> "${MERGE_LIST}"
+    fi
 done
 
 ## Step 2
 echo "Merging BED files..."
-MERGE_LIST="${DATA_DIR}/merge_list.txt"
-for chr in {2..22}; do
-    echo "${DATA_DIR}/chr${chr}" >> "${MERGE_LIST}"
-done
 COMBINED="${DATA_DIR}/combined"
 plink --make-bed \
       --bfile "${DATA_DIR}/chr1" \

@@ -18,7 +18,7 @@ DATA_DIR="${1:-${BASE_DIR}/example_data}"
 CONFIG_DIR="${BASE_DIR}/config"
 PATH="${BASE_DIR}/scripts:${PATH}"
 
-# P1 and P2
+# CP1 and CP2
 for pid in 1 2; do
     data_prep.sh "${pid}" "${DATA_DIR}/party${pid}"
 done

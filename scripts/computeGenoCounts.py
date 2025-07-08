@@ -23,6 +23,9 @@ for chr in range(1, 23):
     pgen_prefix = pgen_filename_template % chr
     out_prefix = os.path.join(out_dir, f"chr{chr}")
 
+    if not os.path.exists(f"{pgen_prefix}.pvar"):
+        continue
+
     os.system(
         f"plink2 --threads 1 --pfile {pgen_prefix} --keep {sample_keep_file} --geno-counts --out {out_prefix}"
     )
