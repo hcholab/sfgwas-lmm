@@ -107,7 +107,7 @@ We provide two preprocessing scripts in `scripts/` for producing additional inpu
 
 `python3 createSnpInfoFiles.py PGEN_PREFIX OUTPUT_DIR`
 
-Note that `PGEN_PREFIX` is expected to be a format string including `%d` in place of the chromosome number (e.g., `geno/chr%d` for the example dataset), which the script sequentially replaces with the chromosome numbers 1-22.
+Note that `PGEN_PREFIX` is expected to be a format string including `%d` in place of the chromosome number (e.g., `geno/chr%d` for the example dataset), which the script sequentially replaces with the chromosome numbers 1-22 (note that it's OK to supply only some chromosomes).
 
 This command generates the following three files in `OUTPUT_DIR`:
 - `chrom_sizes.txt`: the number of SNPs for each chromosome

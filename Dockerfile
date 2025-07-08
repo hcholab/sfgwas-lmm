@@ -9,6 +9,7 @@ WORKDIR /build
 RUN echo install_weak_deps=0 >> /etc/dnf/dnf.conf && \
     microdnf upgrade -y && \
     microdnf install -y \
+        findutils \
         go-toolset \
         python-numpy \
         unzip \
