@@ -15,19 +15,12 @@ echo "Preprocessing data for tests..."
 
 BASE_DIR=$(dirname "$(realpath "$(dirname "$0")")")
 DATA_DIR="${1:-${BASE_DIR}/example_data}"
-CONFIG_DIR="${BASE_DIR}/config"
 PATH="${BASE_DIR}/scripts:${PATH}"
 
 # CP1 and CP2
 for pid in 1 2; do
     data_prep.sh "${pid}" "${DATA_DIR}/party${pid}"
 done
-
-# Copy shared data from P1 to P0
-P0_DIR="${DATA_DIR}/party0"
-mkdir -p "${P0_DIR}"
-cp "${DATA_DIR}/party1/blockSizes.txt" "${P0_DIR}/"
-sed -i "s|../example_data|${DATA_DIR}|g" "${CONFIG_DIR}/configLocal.Party0.toml"
 
 ### Run tests
 run_test() {

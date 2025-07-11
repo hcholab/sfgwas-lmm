@@ -1109,6 +1109,7 @@ func (reg *REGENIE) ComputeStdInv() *mat.Dense {
 func (reg *REGENIE) LoadGFS(isStep1 bool) {
 	config := reg.general.GetConfig()
 	mpcObj := reg.general.GetMPC()
+	network := reg.general.GetNetwork()
 	pid := mpcObj.GetPid()
 
 	reg.K = config.GenoNumFolds
@@ -1132,13 +1133,29 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 		reg.M = config.NumSnps
 		numChrs := config.NumChrs
 
-		genoBlockSizes := readIntSliceFromFile(config.GenoBlockSizeFile, "geno_block_size_file", pid, config.GenoNumBlocks)
-
-		if sumIntSlice(genoBlockSizes) != config.NumSnps {
-			log.Fatalf("Sum of block sizes does not match number of snps")
+		var genoBlockSizes []int
+		if pid > 0 {
+			genoBlockSizes = readIntSliceFromFile(config.GenoBlockSizeFile, "geno_block_size_file", pid, config.GenoNumBlocks)
+			if sumIntSlice(genoBlockSizes) != config.NumSnps {
+				log.Fatalf("Sum of block sizes does not match number of snps")
+			}
+			network.SendInt32Vector(genoBlockSizes, 0)
+		} else {
+			for p := 1; p < network.NumParties; p++ {
+				bs := network.ReceiveInt32Vector(config.GenoNumBlocks, p)
+				if genoBlockSizes == nil {
+					genoBlockSizes = bs
+					continue
+				}
+				for i, b := range bs {
+					if b != genoBlockSizes[i] {
+						log.Fatalf("Block sizes do not match between parties")
+					}
+				}
+			}
 		}
-
 		reg.general.SetGenoBlockSizes(genoBlockSizes)
+
 		reg.general.SetNumChrs(numChrs)
 
 		if pid > 0 {
@@ -1165,13 +1182,29 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 		reg.M = config.Step2NumSnps
 		numChrs := config.NumChrs
 
-		genoBlockSizes := readIntSliceFromFile(config.Step2GenoBlockSizeFile, "step_2_geno_block_size_file", pid, config.Step2GenoNumBlocks)
-
-		if sumIntSlice(genoBlockSizes) != config.NumSnps {
-			log.Fatalf("Sum of block sizes does not match number of snps")
+		var genoBlockSizes []int
+		if pid > 0 {
+			genoBlockSizes = readIntSliceFromFile(config.Step2GenoBlockSizeFile, "step_2_geno_block_size_file", pid, config.Step2GenoNumBlocks)
+			if sumIntSlice(genoBlockSizes) != config.NumSnps {
+				log.Fatalf("Sum of block sizes does not match number of snps")
+			}
+			network.SendInt32Vector(genoBlockSizes, 0)
+		} else {
+			for p := 1; p < network.NumParties; p++ {
+				bs := network.ReceiveInt32Vector(config.Step2GenoNumBlocks, p)
+				if genoBlockSizes == nil {
+					genoBlockSizes = bs
+					continue
+				}
+				for i, b := range bs {
+					if b != genoBlockSizes[i] {
+						log.Fatalf("Block sizes do not match between parties")
+					}
+				}
+			}
 		}
-
 		reg.general.SetGenoBlockSizes(genoBlockSizes)
+
 		reg.general.SetNumChrs(numChrs)
 
 		if pid > 0 {
