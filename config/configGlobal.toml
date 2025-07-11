@@ -26,7 +26,6 @@ calc_g_capacity = 6
 num_inds = [0, 100, 100]
 num_snps = 13638
 num_covs = 5
-num_chrs = 3
 geno_num_blocks = 3
 geno_num_folds = 5
 

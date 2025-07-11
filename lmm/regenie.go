@@ -1131,7 +1131,6 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 	if isStep1 {
 		reg.B = config.GenoNumBlocks
 		reg.M = config.NumSnps
-		numChrs := config.NumChrs
 
 		var genoBlockSizes []int
 		if pid > 0 {
@@ -1156,8 +1155,7 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 		}
 		reg.general.SetGenoBlockSizes(genoBlockSizes)
 
-		reg.general.SetNumChrs(numChrs)
-
+		numChrs := -1
 		if pid > 0 {
 			genoBlockToChr := readIntSliceFromFile(config.GenoBlockToChromFile, "geno_block_to_chrom_file", pid, config.GenoNumBlocks)
 			reg.blockToChr = genoBlockToChr
@@ -1166,7 +1164,20 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 			if sumIntSlice(genoFoldSizes) != config.NumInds[pid] {
 				log.Fatalf("Sum of fold sizes does not match number of inds")
 			}
+
+			numChrs = maxIntSlice(genoBlockToChr) + 1
+			network.SendInt(numChrs, 0)
+		} else {
+			for p := 1; p < network.NumParties; p++ {
+				nc := network.ReceiveInt(p)
+				if numChrs < 0 {
+					numChrs = nc
+				} else if numChrs != nc {
+					log.Fatalf("Number of chromosomes does not match between parties")
+				}
+			}
 		}
+		reg.general.SetNumChrs(numChrs)
 
 		gwasParams := gwas.InitGWASParams(config.NumInds, config.NumSnps, config.NumCovs, config.NumPCs, config.SnpDistThres)
 		reg.general.SetGWASParams(gwasParams)
@@ -1180,7 +1191,6 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 	} else {
 		reg.B = config.Step2GenoNumBlocks
 		reg.M = config.Step2NumSnps
-		numChrs := config.NumChrs
 
 		var genoBlockSizes []int
 		if pid > 0 {
@@ -1205,8 +1215,7 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 		}
 		reg.general.SetGenoBlockSizes(genoBlockSizes)
 
-		reg.general.SetNumChrs(numChrs)
-
+		numChrs := -1
 		if pid > 0 {
 			genoBlockToChr := readIntSliceFromFile(config.Step2GenoBlockToChromFile, "step_2_geno_block_to_chrom_file", pid, config.Step2GenoNumBlocks)
 			reg.blockToChr = genoBlockToChr
@@ -1215,7 +1224,20 @@ func (reg *REGENIE) LoadGFS(isStep1 bool) {
 			if sumIntSlice(genoFoldSizes) != config.NumInds[pid] {
 				log.Fatalf("Sum of fold sizes does not match number of inds")
 			}
+
+			numChrs = maxIntSlice(genoBlockToChr) + 1
+			network.SendInt(numChrs, 0)
+		} else {
+			for p := 1; p < network.NumParties; p++ {
+				nc := network.ReceiveInt(p)
+				if numChrs < 0 {
+					numChrs = nc
+				} else if numChrs != nc {
+					log.Fatalf("Number of chromosomes does not match between parties")
+				}
+			}
 		}
+		reg.general.SetNumChrs(numChrs)
 
 		gwasParams := gwas.InitGWASParams(config.NumInds, config.Step2NumSnps, config.NumCovs, config.NumPCs, config.SnpDistThres)
 		reg.general.SetGWASParams(gwasParams)
