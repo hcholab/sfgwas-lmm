@@ -1,11 +1,14 @@
 package mpc
 
 import (
+	"fmt"
+	"os"
+	"path"
+
 	"github.com/aead/chacha20/chacha"
 	"github.com/hhcho/frand"
-	"github.com/hhcho/mpc-core"
+	mpc_core "github.com/hhcho/mpc-core"
 	"go.dedis.ch/onet/v3/log"
-	"time"
 )
 
 type Random struct {
@@ -26,17 +29,22 @@ func sortInt(a, b int) (int, int) {
 	return b, a
 }
 
-func InitializePRG(pid int, NumParties int) *Random {
-	/* TODO:
-	 * Currently samples shared secrets from
-	 * a deterministic stream. Need a key exchange
-	 * protocol in practice.
-	 */
+func InitializePRG(pid int, NumParties int, sharedKeysPath string) *Random {
 	prgTable := make(map[int]*frand.RNG)
 
+	if sharedKeysPath == "" {
+		log.LLvl1("Warning: shared_keys_path not set in config. Falling back on deterministic keys (not secure).")
+	}
+
 	// Globally shared PRG
-	// TODO: temporary, insecure way of generating a shared seed
 	seed := make([]byte, chacha.KeySize)
+	if sharedKeysPath != "" {
+		key, err := os.ReadFile(path.Join(sharedKeysPath, "shared_key_global.bin"))
+		if err != nil {
+			panic(err)
+		}
+		copy(seed, key)
+	}
 	prgTable[-1] = frand.NewCustom(seed, bufferSize, 20)
 
 	// Pairwise-shared PRG
@@ -45,17 +53,26 @@ func InitializePRG(pid int, NumParties int) *Random {
 			continue
 		}
 
-		// TODO: temporary, insecure way of generating a shared seed
 		a, b := sortInt(pid, i)
-		seed[0] = byte(a)
-		seed[1] = byte(b)
+		if sharedKeysPath == "" { // Temporary, insecure way of generating a shared seed
+			if a >= 256 || b >= 256 {
+				panic("a or b is out of range")
+			}
+			seed[0] = byte(a)
+			seed[1] = byte(b)
+		} else {
+			key, err := os.ReadFile(path.Join(sharedKeysPath, fmt.Sprintf("shared_key_%d_%d.bin", a, b)))
+			if err != nil {
+				panic(err)
+			}
+			copy(seed, key)
+		}
 
 		prgTable[i] = frand.NewCustom(seed, bufferSize, 20)
 	}
 
 	// Local PRG
-	log.LLvl1(time.Now(), "Deterministic local seed for debugging")
-	//frand.Read(seed)
+	frand.Read(seed) // Random seed
 	prgTable[pid] = frand.NewCustom(seed, bufferSize, 20)
 	curPRG := prgTable[pid]
 	return &Random{

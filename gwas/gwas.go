@@ -37,6 +37,8 @@ type Config struct {
 
 	Servers map[string]mpc.Server
 
+	SharedKeysPath string `toml:"shared_keys_path"`
+
 	GenoBinFilePrefix    string `toml:"geno_binary_file_prefix"`
 	GenoNumFolds         int    `toml:"geno_num_folds"`
 	GenoNumBlocks        int    `toml:"geno_num_blocks"`

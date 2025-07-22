@@ -1,3 +1,6 @@
+## Shared keys
+shared_keys_path = "example_data/keys"
+
 ## Data files
 geno_fold_size_file = "../example_data/party2/foldSizes.txt"
 

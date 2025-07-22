@@ -115,7 +115,7 @@ func InitializeLMMProtocol(config *Config, pid int) (lmmProt *ProtocolInfoLMM) {
 
 	params := ckks.DefaultParams[chosen]
 	prec := uint(config.MpcFieldSize)
-	networks := mpc.ParallelNetworks(mpc.InitCommunication(config.Servers, pid, config.NumMainParties+1, config.MpcNumThreads))
+	networks := mpc.ParallelNetworks(mpc.InitCommunication(config.Servers, pid, config.NumMainParties+1, config.MpcNumThreads, config.SharedKeysPath))
 	for thread := range networks {
 		networks[thread].SetMHEParams(params)
 	}

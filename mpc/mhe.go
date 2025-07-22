@@ -369,7 +369,7 @@ func (netObj *Network) CollectiveBootstrapMat(cps *crypto.CryptoParams, cm crypt
 
 }
 
-//BootstrapMatAll: collective bootstrap for all parties (except 0)
+// BootstrapMatAll: collective bootstrap for all parties (except 0)
 func (netObj *Network) BootstrapMatAll(cps *crypto.CryptoParams, cm crypto.CipherMatrix) crypto.CipherMatrix {
 
 	tmp := make(crypto.CipherMatrix, len(cm))
