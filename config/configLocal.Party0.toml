@@ -1,5 +1,5 @@
 ## Shared keys
-shared_keys_path = "example_data/keys"
+shared_keys_path = "../example_data/keys"
 
 ## Data files: none for party 0
 
