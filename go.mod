@@ -10,6 +10,7 @@ require (
 	github.com/ldsec/lattigo/v2 v2.4.0
 	github.com/raulk/go-watchdog v1.3.0
 	go.dedis.ch/onet/v3 v3.2.3
+	golang.org/x/net v0.0.0-20200301022130-244492dfa37a
 	gonum.org/v1/gonum v0.9.3
 )
 

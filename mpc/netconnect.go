@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"go.dedis.ch/onet/v3/log"
+	"golang.org/x/net/proxy"
 
 	"github.com/aead/chacha20/chacha"
 	"github.com/hhcho/frand"
@@ -341,6 +342,9 @@ func (netObj *Network) CloseAll() {
 func Connect(ip, port string) net.Conn {
 	addr := ip + ":" + port
 
+	// Use proxy if environment variables are set
+	dialer := proxy.FromEnvironment()
+
 	// Re-try connecting to server
 	retrySchedule := make([]time.Duration, 3)
 	for i := range retrySchedule {
@@ -350,7 +354,7 @@ func Connect(ip, port string) net.Conn {
 	var c net.Conn
 	var err error
 	for _, retry := range retrySchedule {
-		c, err = net.Dial("tcp", addr)
+		c, err = dialer.Dial("tcp", addr)
 
 		if err == nil {
 			fmt.Println("Successfully connected to " + addr)
